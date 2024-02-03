@@ -21,7 +21,7 @@ export default function Navbar({}: Props) {
               <div>
                 {/* SearchBox */}
 
-                <SearchBox/>
+                <SearchBox />
               </div>
             </section>
         </div>

@@ -22,7 +22,7 @@ export default function SearchBox(props: Props) {
             type="text"
             value={props.value}
             onChange={props.onChange}
-            placeholder='Search location..'
+            placeholder='Cari lokasi....'
             className='px-4 py-2 w-[230px] border
             border-gray-300 rounded-1-md focus:outline-none
             focus:border-blue-500 h-full'
