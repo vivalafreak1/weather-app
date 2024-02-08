@@ -44,3 +44,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 > npm i react-query
 3. axios
 > npm i axios
+4. date-fns
+> npm i date-fns@2.30.0

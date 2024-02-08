@@ -1,7 +1,9 @@
 'use client'
 
+import Container from "@/components/Container";
 import Navbar from "@/components/Navbar";
 import axios from "axios";
+import { format, parseISO } from "date-fns";
 import Image from "next/image";
 import { useQuery } from "react-query";
 
@@ -75,7 +77,10 @@ export default function Home() {
     }
   );
 
-  console.log("data", data?.city.name);
+  const firstData = data?.list[0];
+
+
+  console.log("data", data);
 
   if (isLoading) 
     return (
@@ -89,7 +94,17 @@ export default function Home() {
       <Navbar />
       <main className="px-3 max-w-7xl mx-auto flex flex-col gap-9 w-full pb-10 pt-4">
         {/* Today Data */}
-        <section></section>
+        <section>
+          <div>
+            <h2 className="flex gap-1 text-2xl items-end">
+              <p>{format(parseISO(firstData?.dt_txt ?? ""), "EEEE")}</p>
+              <p className="text-lg">
+                ({format(parseISO(firstData?.dt_txt ?? ""), "dd.MM.yyyy")})
+              </p>
+            </h2>
+            <Container></Container>
+          </div>
+        </section>
         {/* 7 Day Forecast Data */}
         <section></section>
       </main>
