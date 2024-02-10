@@ -2,11 +2,14 @@
 
 import Container from "@/components/Container";
 import Navbar from "@/components/Navbar";
+import WeatherDetails from "@/components/WeatherDetails";
 import WeatherIcon from "@/components/WeatherIcon";
+import { convertWindSpeed } from "@/utils/convertWindSpeed";
 import { getDayOrNightIcon } from "@/utils/getDayOrNightIcon";
 import { kelvinToCelcius } from "@/utils/kelvinToCelcius";
+import { metersToKilometers } from "@/utils/metersToKilometers";
 import axios from "axios";
-import { format, parseISO } from "date-fns";
+import { format, fromUnixTime, parseISO } from "date-fns";
 import Image from "next/image";
 import { useQuery } from "react-query";
 
@@ -150,10 +153,41 @@ export default function Home() {
               </div>
             </Container>
           </div>
+          <div className=" flex gap-4">
+            { /* left */ }
+            <Container className="w-fit justify-center flex-col px-4 items-center">
+              <p className="capitalize text-centter">
+                {firstData?.weather[0].description}
+              </p>
+              <WeatherIcon 
+                iconName={getDayOrNightIcon(
+                  firstData?.weather[0].icon ?? "", 
+                  firstData?.dt_txt ?? ""
+                )}
+              />
+            </Container>
+            <Container className="bg-yellow-300/80 px-6 gap-4 justify-between overflow-x-auto">
+              <WeatherDetails 
+                visibility={metersToKilometers(firstData?.visibility ?? 10000)} 
+                humidity={`${firstData?.main.humidity}%`}
+                windSpeed={convertWindSpeed(firstData?.wind.speed ?? 1.64)}
+                airPressure={`${firstData?.main.pressure} hPa`}
+                sunrise={format(
+                  fromUnixTime(data?.city.sunrise ?? 1702949452), 
+                  "H:mm"
+                )}
+                sunset={format(
+                  fromUnixTime(data?.city.sunset ?? 1702517657), 
+                  "H:mm"
+                )}
+              />
+            </Container>
+            { /* right */ }
+          </div>
         </section>
         {/* 7 Day Forecast Data */}
-        <section>
-          <p></p>
+        <section className="flex w-full flex-col gap-4 ">
+          <p className="text-2xl">Forcast (7 days)</p>
         </section>
       </main>
     </div>
