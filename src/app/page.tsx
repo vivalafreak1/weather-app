@@ -11,8 +11,11 @@ import { kelvinToCelcius } from "@/utils/kelvinToCelcius";
 import { metersToKilometers } from "@/utils/metersToKilometers";
 import axios from "axios";
 import { format, fromUnixTime, parseISO } from "date-fns";
+import { useAtom } from "jotai";
 import Image from "next/image";
 import { useQuery } from "react-query";
+import { loadingCityAtom, placeAtom } from "./atom";
+import { useEffect } from 'react';
 
 interface WeatherData {
   cod: string;
@@ -74,18 +77,24 @@ interface WeatherDetail {
 
 
 export default function Home() {
-  const { isLoading, error, data } = useQuery<WeatherData>(
+  const [place, setPlace] = useAtom(placeAtom);
+  const [loadingCity] = useAtom(loadingCityAtom);
+
+  const { isLoading, error, data, refetch } = useQuery<WeatherData>(
     'repoData', 
     async () => {
       const { data } = await axios.get(
-        `https://api.openweathermap.org/data/2.5/forecast?q=jakarta&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}&cnt=56`
+        `https://api.openweathermap.org/data/2.5/forecast?q=${place}&appid=${process.env.NEXT_PUBLIC_WEATHER_KEY}&cnt=56`
       );
       return data;
     }
   );
 
-  const firstData = data?.list[0];
+    useEffect(() => {
+      refetch();
+    }, [place, refetch])
 
+  const firstData = data?.list[0];
 
   console.log("data", data);
 
@@ -114,9 +123,13 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-4 bg-gray-100 min-h-screen">
-      <Navbar />
+      <Navbar location={data?.city.name}/>
       <main className="px-3 max-w-7xl mx-auto flex flex-col gap-9 w-full pb-10 pt-4">
         {/* Today Data */}
+        {loadingCity ? (
+        <WeatherSkeleton/> 
+        ): (
+        <>
         <section className="space-y-4">
           <div className="space-y-2">
             <h2 className="flex gap-1 text-2xl items-end">
@@ -231,7 +244,48 @@ export default function Home() {
             />
           ))}
         </section>
+        </>)}
       </main>
     </div>
   );
 }
+
+  function WeatherSkeleton() {
+    return (
+      <section className="space-y-8">
+        {/* Today's data skeleton */}
+        <div className="space-y-2 animate-pulse">
+          {/* Date skeleton */}
+          <div className="flex gap-1 text-2xl items-end">
+            <div className="h-6 w-24 bg-gray-300 rounded"></div>
+            <div className="h-6 w-24 bg-gray-300 rounded"></div>
+          </div>
+
+          {/* Time wise temperature skeleton */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((index) => (
+              <div key={index} className="flex flex-col items-center space-y-2">
+                <div className="h-6 w-16 bg-gray-300 rounded"></div>
+                <div className="h-6 w-6 bg-gray-300 rounded-full"></div>
+                <div className="h-6 w-16 bg-gray-300 rounded"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 7 days forecast skeleton */}
+        <div className="flex flex-col garp-4 animate-pulse">
+          <p className="text-2xl h-8 w-36 bg-gray-300 rounded"></p>
+
+          {[1, 2, 3, 4, 5, 6, 7].map((index)=> (
+            <div key={index} className="grid grid-cols-2 md:grid-cols-4 garp-4">
+              <div className="h-8 w-28 bg-gray-300 rounded"></div>
+              <div className="h-10 w-10 bg-gray-300 rounded-full"></div>
+              <div className="h-8 w-28 bg-gray-300 rounded"></div>
+              <div className="h-8 w-28 bg-gray-300 rounded"></div>
+            </div>
+          ))}
+        </div>
+      </section>
+    )
+  }
