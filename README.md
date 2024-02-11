@@ -46,3 +46,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 > npm i axios
 4. date-fns
 > npm i date-fns@2.30.0
+5. Jotai
+> npm i jotai
