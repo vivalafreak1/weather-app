@@ -16,6 +16,7 @@ import Image from "next/image";
 import { useQuery } from "react-query";
 import { loadingCityAtom, placeAtom } from "./atom";
 import { useEffect } from 'react';
+import Footer from "@/components/Footer";
 
 interface WeatherData {
   cod: string;
@@ -196,7 +197,7 @@ export default function Home() {
                 )}
               />
             </Container>
-            <Container className="bg-yellow-300/80 px-6 gap-4 justify-between overflow-x-auto">
+            <Container className="bg-yellow-300/80 px-16 gap-10 justify-between overflow-x-auto">
               <WeatherDetails 
                 visibility={metersToKilometers(firstData?.visibility ?? 10000)} 
                 humidity={`${firstData?.main.humidity}%`}
@@ -217,14 +218,14 @@ export default function Home() {
         </section>
         {/* 7 Day Forecast Data */}
         <section className="flex w-full flex-col gap-4 ">
-          <p className="text-2xl">Forcast (7 days)</p>
+          <p className="text-2xl">Forecast (7 days)</p>
           {firstDataForEachDate.map((d, i) => (
             <ForecastWeatherDetail 
               key={i}
               description={d?.weather[0].description ?? ""}
               weatherIcon={d?.weather[0].icon ?? "01d"}
-              date={d?.dt_txt ?? ""}
-              day={d?.dt_txt ?? ""}
+              date={format(parseISO(d?.dt_txt ?? ""), "dd MMMM")}
+              day={format(parseISO(d?.dt_txt ?? ""), "EEEE")}
               feels_like={d?.main.feels_like ?? 0}
               temp={d?.main.temp ?? 0}
               temp_max={d?.main.temp_max ?? 0}
@@ -246,6 +247,7 @@ export default function Home() {
         </section>
         </>)}
       </main>
+      <Footer />
     </div>
   );
 }

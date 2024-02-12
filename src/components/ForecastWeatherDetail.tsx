@@ -34,14 +34,15 @@ export default function ForecastWeatherDetail(
       <section className=" flex gap-4 items-center px-4">
         <div className=" flex flex-col gap-1 items-center">
           <WeatherIcon iconName={weatherIcon}/>
-          <p>{date}</p>
+          <p className='text-xs'>{date}</p>
+          <p className="text-xs">{day}</p>
           { /*<p className="text-sm">{day}</p>*/ }
         </div>
 
         {/*  */}
         <div className="flex flex-col px-4">
           <span className="text-5xl">{kelvinToCelcius(temp ?? 0)}°</span>
-          <p className="text=xs space-x-1 whitespace-nowrap">
+          <p className="text-xs space-x-1 whitespace-nowrap">
             <span> Feels like</span>
             <span>{kelvinToCelcius(feels_like ?? 0)}°</span>
           </p>
